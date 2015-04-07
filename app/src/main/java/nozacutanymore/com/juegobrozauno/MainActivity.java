@@ -14,16 +14,21 @@ import android.app.Activity;
         import android.widget.ImageView;
         import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 
 public class MainActivity extends Activity implements View.OnTouchListener{
 
-
+    private Random r;
     private ImageView v;
+    private ArrayList<ImageView> images;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        r = new Random();
+        images = new ArrayList<>();
         //Changing to fullscreen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -33,18 +38,23 @@ public class MainActivity extends Activity implements View.OnTouchListener{
 
         background.setBackgroundColor(Color.RED);
         setContentView(R.layout.activity_main);
-        ImageView image = new ImageView(this);
 
-        image.setX(150f);
-        image.setY(150f);
-        image.setBackgroundColor(Color.BLUE);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(100,100);
-        FrameLayout myLayout = (FrameLayout)findViewById(R.id.layout);
-        myLayout.addView(image,params);
         v = (ImageView)findViewById(R.id.imageView);
         v.setImageResource(R.drawable.rotodoscon);
+        FrameLayout myLayout = (FrameLayout)findViewById(R.id.layout);
+        FrameLayout.LayoutParams params;
         v.setOnTouchListener(this);
 
+        for(int i = 0; i < 10; i++){
+            ImageView image = new ImageView(this);
+
+            image.setX(r.nextFloat() * 300 + 150);
+            image.setY(r.nextFloat() * 300 + 150);
+            image.setImageResource(R.drawable.rotodoscon);
+            params = new FrameLayout.LayoutParams(100,100);
+            image.setOnTouchListener(this);
+            myLayout.addView(image,params);
+        }
 
 
 
@@ -58,7 +68,8 @@ public class MainActivity extends Activity implements View.OnTouchListener{
     public boolean onTouch(View v, MotionEvent event) {
 
 
-
+        v.bringToFront();
+        ((View)v.getParent()).invalidate();
             if(event.getAction() == MotionEvent.ACTION_MOVE){
 
                 if(v.getX()>=0 && v.getY()>= 0) {
@@ -67,14 +78,13 @@ public class MainActivity extends Activity implements View.OnTouchListener{
                 }
                 else{
                     v.setX(0.1f);
-                    float devY = v.getY()+0.1f;
                     v.setY(v.getY()+0.1f);
                 }
 
             }
             if(event.getAction() == MotionEvent.ACTION_UP){
-                v.setX(v.getX() + (int)event.getX()-v.getWidth() / 2);
-                v.setY(v.getY() + (int)event.getY()-v.getHeight()/2);
+                v.setX(v.getX() + (int) event.getX() - v.getWidth() / 2);
+                v.setY(v.getY() + (int) event.getY() - v.getHeight() / 2);
 
 
 
